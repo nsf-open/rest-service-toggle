@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:flow="http://www.springframework.org/schema/webflow-config"
+       xmlns:oxm="http://www.springframework.org/schema/oxm"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/webflow-config
+                           http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd
+                           http://www.springframework.org/schema/tx
+						   http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/oxm
+                           http://www.springframework.org/schema/oxm/spring-oxm.xsd
+                           http://www.springframework.org/schema/cache
+						   http://www.springframework.org/schema/cache/spring-cache.xsd">
+
+     <context:annotation-config />
+
+
+	 <!-- Enables the Spring MVC @Controller programming model -->
+	 <mvc:annotation-driven>
+	  <mvc:message-converters>
+            <!-- Use the EmberAwareObjectMapper mapper instead of the default -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="gov.nsf.common.ember.model.EmberObjectMapper" />
+                </property>
+            </bean>
+       </mvc:message-converters>
+	 </mvc:annotation-driven>
+
+
+	 <context:component-scan base-package="gov.nsf.toggleservice.controller, gov.nsf.common.controller"/>
+
+	 <!-- Import Logging Util Context XML-->
+	 <!-- <import resource="classpath*:logging-context.xml" /> -->
+
+	 <!-- This bean resolves specific types of exceptions to corresponding logical view names for error views. -->
+	 <!-- TODO-vnayak Determine if used . Maybe be inherited from old applications -->
+       <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+         <property name="exceptionMappings">
+			 <props>
+          	 	<prop key="org.springframework.web.servlet.PageNotFound">pageNotFound</prop>
+			 </props>
+         </property>
+       </bean>
+
+
+
+</beans>

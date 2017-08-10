@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+    <display-name>Toggle-Service</display-name>
+    <description>Toggle-Service</description>
+    <session-config>
+        <session-timeout>120</session-timeout>
+    </session-config>
+    <servlet>
+        <servlet-name>toggleservice</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>toggleservice</servlet-name>
+        <url-pattern>/api/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>TogglzConsoleServlet</servlet-name>
+        <servlet-class>org.togglz.console.TogglzConsoleServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TogglzConsoleServlet</servlet-name>
+        <url-pattern>/togglz/*</url-pattern>
+    </servlet-mapping>
+
+    <context-param>
+        <param-name>org.togglz.core.manager.TogglzConfig</param-name>
+        <param-value>gov.nsf.toggleservice.config.MyNSFToggleConfig</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>WEB-INF/toggleservice-servlet.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>authApi</web-resource-name>
+            <url-pattern>/api/auth/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>svcrole</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <login-config>
+        <auth-method>BASIC</auth-method>
+        <realm-name>default</realm-name>
+    </login-config>
+
+    <security-role>
+        <role-name>svcrole</role-name>
+    </security-role>
+
+
+    <!-- Togglz configuration for Servlet 2.5 and earlier -->
+    <filter>
+        <filter-name>TogglzFilter</filter-name>
+        <filter-class>org.togglz.servlet.TogglzFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>TogglzFilter</filter-name>
+        <url-pattern>/togglz/*</url-pattern>
+        <url-pattern>/api/toggles/*</url-pattern>
+    </filter-mapping>
+
+    <!--Spring Security Filter-->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/api/*</url-pattern>
+        <url-pattern>/togglz/*</url-pattern>
+    </filter-mapping>
+</web-app>

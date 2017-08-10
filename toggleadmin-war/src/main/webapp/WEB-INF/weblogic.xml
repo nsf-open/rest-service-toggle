@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wls:weblogic-web-app xmlns:wls="http://www.bea.com/ns/weblogic/weblogic-web-app">
+<!--	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.bea.com/ns/weblogic/weblogic-web-app http://www.oracle.com/technology/weblogic/10.3/weblogic-web-app/1.0/weblogic-web-app.xsd"-->
+	<wls:context-root>toggle-service/v1</wls:context-root>
+	<!-->wls:resource-description>
+		<wls:res-ref-name>nsf/mail/NSFMail</wls:res-ref-name>
+		<wls:jndi-name>nsf/mail/NSFMail</wls:jndi-name>
+	</wls:resource-description-->
+
+	<!-- Security Constraints for Service to Service to Basic Auth. Role svcrole -->
+	<wls:security-role-assignment>
+		<wls:role-name>svcrole</wls:role-name>
+		<wls:principal-name>SvcClientGroup</wls:principal-name>
+	</wls:security-role-assignment>
+</wls:weblogic-web-app>

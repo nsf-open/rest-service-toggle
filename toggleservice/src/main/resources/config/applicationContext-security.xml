@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:b="http://www.springframework.org/schema/beans"
+	   xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:flow="http://www.springframework.org/schema/webflow-config"
+	   xmlns:oxm="http://www.springframework.org/schema/oxm" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:security="http://www.springframework.org/schema/security"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc.xsd
+                           http://www.springframework.org/schema/webflow-config
+                           http://www.springframework.org/schema/webflow-config/spring-webflow-config.xsd
+                           http://www.springframework.org/schema/oxm
+                           http://www.springframework.org/schema/oxm/spring-oxm.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security.xsd">
+
+	<!-- This is an example configuration that shouldn't need changing for most 
+		services -->
+	<security:global-method-security
+		pre-post-annotations="enabled">
+		<security:expression-handler ref="customMethodSecurityExpressionHandler" />
+	</security:global-method-security>
+	<bean id="customMethodSecurityExpressionHandler"
+		class="gov.nsf.components.authorization.permissions.CustomMethodSecurityExpressionHandler">
+		<property name="permissionEvaluator" ref="customPermissionEvaluator" />
+	</bean>
+	<b:bean id="customPermissionEvaluator"
+		class="gov.nsf.components.authorization.permissions.CustomPermissionEvaluator">
+	</b:bean>
+
+	<context:component-scan base-package="gov.nsf.components.authorization" />
+	<b:bean id="http403EntryPoint"
+		class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint" />
+
+
+	<bean id="preauthAuthProvider"
+		class="org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider">
+		<b:property name="preAuthenticatedUserDetailsService">
+			<b:bean
+				class="gov.nsf.components.authorization.filter.CustomPreAuthenticatedGrantedAuthoritiesUserDetailsService" />
+		</b:property>
+	</bean>
+
+	<security:authentication-manager alias="authenticationManager">
+		<security:authentication-provider
+			ref="preauthAuthProvider" />
+	</security:authentication-manager>
+	
+	<bean id="accessManagementServiceClient"
+		class="gov.nsf.accessmanagement.client.AccessManagementServiceClientImpl">
+		<property name="accessManagementServiceURL" value="${AmSvc.ServiceURL}" />
+		<property name="accessManagementServiceUserName" value="${AmSvc.UserName}" />
+		<property name="accessManagementServicePassword" value="${AmSvc.Password}" />
+		<property name="authenticationRequired" value="true"></property>
+		<property name="requestTimeout" value="60000"></property>
+	</bean>
+	
+	<bean id="preAuthWebAuthDetailsSource"
+		class="gov.nsf.components.authorization.filter.PreAuthenticatedWebAuthenticationDetailsSourceWithAccessManagement">
+		<property name="accessManagementServiceClient" ref="accessManagementServiceClient" />
+	</bean>
+
+
+	<bean id="preAuthFilter"
+		class="gov.nsf.components.authorization.filter.PreAuthenticatedProcessingFilter">
+		<b:property name="authenticationManager" ref="authenticationManager" />
+		<b:property name="authenticationDetailsSource" ref="preAuthWebAuthDetailsSource" />
+	</bean>
+
+	<security:http use-expressions="true"
+		disable-url-rewriting="true" create-session="stateless" auto-config="true"
+		entry-point-ref="http403EntryPoint">
+		<security:csrf disabled="true" />
+		<security:custom-filter position="PRE_AUTH_FILTER"
+			ref="preAuthFilter" />
+	</security:http>
+
+
+</beans>

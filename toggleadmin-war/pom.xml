@@ -1,0 +1,113 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- *********************************************************************** -->
+	<!-- Project Identification -->
+	<!-- *********************************************************************** -->
+	<groupId>gov.nsf.services.toggle</groupId>
+	<artifactId>toggle-service-war</artifactId>
+	<packaging>war</packaging>
+	<name>MyNSF Toggle Service War</name>
+	<description>MyNSF Toggle Service War</description>
+	<version>1.1.2-SNAPSHOT</version>
+
+	<!-- *********************************************************************** -->
+	<!-- Project Parent -->
+	<!-- *********************************************************************** -->
+	<parent>
+		<groupId>gov.nsf.mynsf</groupId>
+		<artifactId>mynsf-war-pom</artifactId>
+		<version>1.0.10-SNAPSHOT</version>
+	</parent>
+
+	<!-- *********************************************************************** -->
+	<!-- Project Dependencies -->
+	<!-- *********************************************************************** -->
+	<properties>
+		<togglz.version>2.2.0.Final</togglz.version>
+	</properties>
+
+	<!-- *********************************************************************** -->
+	<!-- Project Dependencies -->
+	<!-- *********************************************************************** -->
+
+	<dependencies>
+		<dependency>
+			<groupId>gov.nsf.components</groupId>
+			<artifactId>authorization</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>toggle-service</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Togglz Admin Console -->
+		<!-- Togglz Admin Console -->
+		<dependency>
+			<groupId>org.togglz</groupId>
+			<artifactId>togglz-console</artifactId>
+			<version>${togglz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.togglz</groupId>
+			<artifactId>togglz-spring-core</artifactId> <!-- was 'togglz-spring' before -->
+			<version>${togglz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.togglz</groupId>
+			<artifactId>togglz-spring-web</artifactId> <!-- was 'togglz-spring' before -->
+			<version>${togglz.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.togglz</groupId>
+			<artifactId>togglz-servlet</artifactId> <!-- was 'togglz-spring' before -->
+			<version>${togglz.version}</version>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-validator</artifactId> 
+			<version>4.2.0.Final</version> </dependency> -->
+	</dependencies>
+
+	<!-- *********************************************************************** -->
+	<!-- Project Build -->
+	<!-- *********************************************************************** -->
+
+	<build>
+		<finalName>${project.artifactId}-v1</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warSourceExcludes>src/main/webapp/WEB-INF/lib/**</warSourceExcludes>
+					<archive>
+						<manifestEntries>
+							<Build-Time>${buildNumber}</Build-Time>
+							<Build-Version>${version}</Build-Version>
+							<Build-Baseline>${buildBaseline}</Build-Baseline>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat6-maven-plugin</artifactId>
+				<version>2.2</version>
+
+				<configuration>
+					<warFile>${project.build.directory}/${project.build.finalName}.war</warFile>
+				</configuration>
+
+			</plugin>
+		</plugins>
+	</build>
+</project>
+

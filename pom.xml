@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<!-- *********************************************************************** -->
+	<!--                 Project Identification                                  -->
+	<!-- *********************************************************************** -->
+	<groupId>gov.nsf.services.toggle</groupId>
+	<artifactId>toggle</artifactId>
+	<version>1.1.2-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>My NSF Toggle Service</name>
+	<description>My NSF Toggle Service</description>
+
+	<!-- *********************************************************************** -->
+	<!--                 Project Parent                                          -->
+	<!-- *********************************************************************** -->
+	<parent>
+		<groupId>gov.nsf.mynsf</groupId>
+		<artifactId>mynsf-pom</artifactId>
+		<version>1.0.10-SNAPSHOT</version>
+	</parent>
+
+	<!-- *********************************************************************** -->
+	<!--                 Project Modules                                         -->
+	<!-- *********************************************************************** -->
+	<modules>
+		<module>toggleservice</module>
+		<module>toggleadmin-war</module>
+		<module>toggleservice-client</module>
+		<module>toggleservice-API</module>
+	</modules>
+
+	<!-- *********************************************************************** -->
+	<!--                 Project Properties                                      -->
+	<!-- *********************************************************************** -->
+	<properties>
+		<togglz.version>2.2.0.Final</togglz.version>
+	</properties>
+
+	<!-- *********************************************************************** -->
+	<!-- 		            Project Building                                     -->
+	<!-- *********************************************************************** -->
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/*_NoCI.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- *********************************************************************** -->
+	<!--                 Project Dependencies Management                         -->
+	<!-- *********************************************************************** -->
+</project>
